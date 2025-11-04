@@ -1,46 +1,42 @@
-#Here is the work from tutorial. Root findinig using the secant method so maybe this is useful
 import numpy as np
 import matplotlib.pyplot as plt
 
-fx=lambda x:x**2+4*x-12
+def max_displacement(k):
+    def f(t,y):
+        x, v =y
+        a=(F(t)-c*v-k*x)/m 
+        return np.array([v,a])
+    
+    t, y=rk4(f, np.array([0.0,0.0]),0.0, 5.0, 0.001)
+    x, _=y.T
+    return np.max(np.abs(x))
 
-def secant(f, x0,x1, N):
-    for _ in range(N):
-        fx0,fx1=f(x0), fx(1)
-        if fx1-fx0 ==0:
+
+
+def objective(k):
+    return max_displacement(k)-0.05
+
+def secant(f,x0,x1,tol=1e-6, N=50):
+    for i in range(N):
+        f0,f1=f(x0), f(x1)
+        if f1-f0==0:
+            print ("Division by 0 encountered")
             return None
-        x2=x1-fx1*(x1-x0)/(fx1-fx0)
+        x2=x1-f1*(x1-x0)/(f1-f0)
+        print(f"Iteration {i+1}:k={x2:.2f},f(k)={f(x2):.6f}")
+        if abs(x2-x1)<tol:
+            print("Convergred!")
+            return x2
         x0,x1=x1,x2
-    return x1
+    print("Did not converge within max iterations.")
+    return x2
 
-x0,x1=0,4
+m=0.5
+c=50
+F=lambda t: 100*np.sin(2*np.pi*t)
 
-N_values=range(1,11)
-xroots_secant=[]
-errors_secant=[]
+k0,k1=500,30000
+k_solution= secant(objective,k0,k1)
 
-for N in N_values:
-    xroot=secant(fx,x0,x1,N)
-    xroots_secant.append(xroot)
-    errors_secant.append(abs(fx(xroot)))
-
-plt.figure(figsize=(10,4))
-
-plt.subplot(1,2,1)
-plt.plot(N_values, xroots_secant, 'o-', label='Root estimate')
-plt.xlabel('Iterations (N)')
-plt.ylabel('x_root')
-plt.title('Secant Method Root vs Iterations')
-plt.grid(True)
-
-plt.subplot(1,2,2)
-plt.semilogy(N_values, errors_secant, 's-', color='r', label='|f(x_root)|')
-plt.xlabel('Iterations (N)')
-plt.ylabel('Error (log scale)')
-plt.title('Secant Method Error vs Iterations')
-plt.grid(True)
-plt.tight_layout()
-plt.show()
-
-print("Final estimated root (Secant):", xroots_secant[-1])
+print(f"\nEstimated stiffness k ≈ {k_solution:.2f} N/m")
 
