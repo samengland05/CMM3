@@ -1,20 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+#This is the function that we look at. The maximum displacement of the system body subjected to the terrain
 def max_displacement(k):
     def f(t,y):
         x, v =y
         a=(F(t)-c*v-k*x)/m 
         return np.array([v,a])
-    
+    #This integrates the ODE code into my function so it represents the system
     t, y=rk4(f, np.array([0.0,0.0]),0.0, 5.0, 0.001)
     x, _=y.T
     return np.max(np.abs(x))
 
 
-
+#This allows for the value we are after to be the root so we can use root finding
 def objective(k):
-    return max_displacement(k)-0.05
+    return max_displacement(k)-0.025
+
 
 def secant(f,x0,x1,tol=1e-6, N=50):
     for i in range(N):
@@ -31,11 +33,11 @@ def secant(f,x0,x1,tol=1e-6, N=50):
     print("Did not converge within max iterations.")
     return x2
 
-m=0.5
-c=50
+m=50
+c=700
 F=lambda t: 100*np.sin(2*np.pi*t)
 
-k0,k1=500,30000
+k0,k1=2000,5000
 k_solution= secant(objective,k0,k1)
 
 print(f"\nEstimated stiffness k ≈ {k_solution:.2f} N/m")
