@@ -1,0 +1,145 @@
+# Create an explicit polynomial equation for z_r(t)
+# from the Gale terrain CSV file
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# import data from csv
+data = pd.read_csv("gale_terrain_synthetic.csv")
+
+# columns for time and height
+time_values = np.array(data["time_s"])
+height_values = np.array(data["elevation_m"])
+
+# make polynomial curve
+# input polynomial order
+poly_order = 6
+
+# retun coefficients
+poly_coeff = np.polyfit(time_values, height_values, poly_order)
+
+# turn the coefficients into a callable polynomial object
+z_r = np.poly1d(poly_coeff)
+
+# display equation
+print("\nApproximation for mars terrain profile z_r(t):\n")
+print(z_r)
+
+# to display polynomial neatly
+print("\nPolynomial coefficients (a0 is constant term):")
+for i, c in enumerate(poly_coeff[::-1]):
+    print(f"a{i} = {c:.6e}")
+
+# data plot against polynomial
+# dnese time axis to smoothen curve 
+t_plot = np.linspace(time_values.min(), time_values.max(), 800)
+
+plt.figure(figsize=(8,4))
+plt.scatter(time_values, height_values, s=12, color="black", label="Recorded data")
+plt.plot(t_plot, z_r(t_plot), "r-", lw=1.8, label=f"Polynomial line (deg={poly_order})")
+plt.xlabel("Time [s]")
+plt.ylabel("Height [m]")
+plt.title("Polynomial Curve of Mars Terrain z_r(t)")
+plt.grid(True, ls="--", alpha=0.6)
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters (example Mars rover wheel suspension)
+m = 50.0     # kg
+k = 15000.0  # N/m
+c = 1200.0   # N·s/m
+
+# External force (terrain bump)
+def F(t):
+    return 1000.0 if 1.0 <= t <= 1.2 else 0.0
+
+# ODE system: y = [x, v]  (displacement, velocity)
+def f(t, y):
+    x, v = y
+    a = (F(t) - c*v - k*x) / m  # from m*a = F - c*v - k*x
+    return np.array([v, a])
+
+# Runge-Kutta 4th order
+def rk4(f, y0, t0, tf, dt):
+    t = np.arange(t0, tf + dt, dt)
+    y = np.zeros((len(t), len(y0)))
+    y[0] = y0
+    for i in range(1, len(t)):
+        k1 = f(t[i-1], y[i-1])
+        k2 = f(t[i-1] + dt/2, y[i-1] + dt*k1/2)
+        k3 = f(t[i-1] + dt/2, y[i-1] + dt*k2/2)
+        k4 = f(t[i-1] + dt, y[i-1] + dt*k3)
+        y[i] = y[i-1] + (dt/6)*(k1 + 2*k2 + 2*k3 + k4)
+    return t, y
+
+# Initial conditions
+y0 = np.array([0.0, 0.0])  # x0=0, v0=0
+t0, tf, dt = 0.0, 5.0, 0.001
+
+# Solve
+t, y = rk4(f, y0, t0, tf, dt)
+x, v = y.T
+
+# Plot displacement
+plt.figure(figsize=(9,5))
+plt.plot(t, x)
+plt.title("Mars Rover Suspension (1D)")
+plt.xlabel("Time [s]")
+plt.ylabel("Displacement [m]")
+plt.grid(True)
+plt.show()
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+#This is the function that we look at. The maximum displacement of the system body subjected to the terrain to maximimse stability
+def max_displacement(k):
+    def f(t,y):
+        x, v =y
+        a=(F(t)-c*v-k*x)/m 
+        return np.array([v,a])
+
+#This integrates the ODE code into my function so it represents the system
+    t, y=rk4(f, np.array([0.0,0.0]),0.0, 5.0, 0.001)
+    x, _=y.T
+    return np.max(np.abs(x))
+
+
+#This allows for the value we are after to be the root so we can use root finding
+def objective(k):
+    return max_displacement(k)-0.025
+
+
+#This is my root finding technique- using the secant method. 
+#I use 50 iterations to try get the most accurate result possible whilst not using too much computing power
+def secant(f,x0,x1,tol=1e-6, N=50):
+    for i in range(N):
+        f0,f1=f(x0), f(x1)
+        if f1-f0==0:
+            print ("Division by 0 encountered")
+            return None
+        x2=x1-f1*(x1-x0)/(f1-f0)
+        print(f"Iteration {i+1}:k={x2:.2f},f(k)={f(x2):.6f}")
+        if abs(x2-x1)<tol:
+            print("Convergred!")
+            return x2
+        x0,x1=x1,x2
+    print("Did not converge within max iterations.")
+    return x2
+
+#This defines the parameters for the system.
+m=50
+c=700
+F=lambda t: 100*np.sin(2*np.pi*t)
+
+
+#These are the guesses made for the root to allow the secant procedure to take place
+k0,k1=2000,5000
+k_solution= secant(objective,k0,k1)
+
+print(f"\nEstimated stiffness k ≈ {k_solution:.2f} N/m")
