@@ -46,25 +46,8 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-import numpy as np
-import matplotlib.pyplot as plt
 
-# Parameters (example Mars rover wheel suspension)
-m = 50.0     # kg
-k = 15000.0  # N/m
-c = 1200.0   # N·s/m
-
-# External force (terrain bump)
-def F(t):
-    return 1000.0 if 1.0 <= t <= 1.2 else 0.0
-
-# ODE system: y = [x, v]  (displacement, velocity)
-def f(t, y):
-    x, v = y
-    a = (F(t) - c*v - k*x) / m  # from m*a = F - c*v - k*x
-    return np.array([v, a])
-
-# Runge-Kutta 4th order
+   
 def rk4(f, y0, t0, tf, dt):
     t = np.arange(t0, tf + dt, dt)
     y = np.zeros((len(t), len(y0)))
@@ -77,46 +60,27 @@ def rk4(f, y0, t0, tf, dt):
         y[i] = y[i-1] + (dt/6)*(k1 + 2*k2 + 2*k3 + k4)
     return t, y
 
-# Initial conditions
-y0 = np.array([0.0, 0.0])  # x0=0, v0=0
-t0, tf, dt = 0.0, 5.0, 0.001
-
-# Solve
-t, y = rk4(f, y0, t0, tf, dt)
-x, v = y.T
-
-# Plot displacement
-plt.figure(figsize=(9,5))
-plt.plot(t, x)
-plt.title("Mars Rover Suspension (1D)")
-plt.xlabel("Time [s]")
-plt.ylabel("Displacement [m]")
-plt.grid(True)
-plt.show()
-
-import numpy as np
-import matplotlib.pyplot as plt
-
-#This is the function that we look at. The maximum displacement of the system body subjected to the terrain to maximimse stability
 def max_displacement(k):
     def f(t,y):
         x, v =y
         a=(F(t)-c*v-k*x)/m 
         return np.array([v,a])
-
-#This integrates the ODE code into my function so it represents the system
     t, y=rk4(f, np.array([0.0,0.0]),0.0, 5.0, 0.001)
     x, _=y.T
     return np.max(np.abs(x))
+    
 
 
-#This allows for the value we are after to be the root so we can use root finding
+def F(t):
+    if 1.0<=t<=1.2:
+        return 330.0*np.sin(np.pi*(t-1)/0.17)
+    else: 
+        return 0.0
+
+
 def objective(k):
     return max_displacement(k)-0.025
 
-
-#This is my root finding technique- using the secant method. 
-#I use 50 iterations to try get the most accurate result possible whilst not using too much computing power
 def secant(f,x0,x1,tol=1e-6, N=50):
     for i in range(N):
         f0,f1=f(x0), f(x1)
@@ -132,14 +96,45 @@ def secant(f,x0,x1,tol=1e-6, N=50):
     print("Did not converge within max iterations.")
     return x2
 
-#This defines the parameters for the system.
-m=50
-c=700
-F=lambda t: 100*np.sin(2*np.pi*t)
+
+m=185/6
+c=1000
 
 
-#These are the guesses made for the root to allow the secant procedure to take place
-k0,k1=2000,5000
+##This creates a range of k values to plot
+
+k_values_plot = np.linspace(500, 10000, 100) 
+
+
+# We use objective(k) which returns (deflection - 0.05)
+objective_values = []
+for k_val in k_values_plot:
+    print(f"Plotting: Trying k={k_val:.0f}")
+    objective_values.append(objective(k_val))
+
+#Create the plot
+plt.figure(figsize=(10, 6))
+plt.plot(k_values_plot, objective_values, 'b-', label='objective(k) [Max Deflection - 0.05 m]')
+
+# Add the target line (where objective = 0)
+plt.axhline(y=0.0, color='r', linestyle='--', 
+            label='Target (objective = 0)')
+
+#Add labels and title
+plt.xlabel('Spring Stiffness $k$ (N/m)')
+plt.ylabel('Objective Function Output')
+plt.title('Objective Function vs. Stiffness')
+plt.legend()
+plt.grid(True)
+plt.savefig('objective_function_plot.png')
+
+print("Plot 'objective_function_plot.png' saved.")
+print("Look at this plot to find where the blue line crosses the red line.")
+print("Use k-values on either side of that crossing as your new k0 and k1.")
+
+k0,k1=4000,6000
 k_solution= secant(objective,k0,k1)
-
 print(f"\nEstimated stiffness k ≈ {k_solution:.2f} N/m")
+
+
+
