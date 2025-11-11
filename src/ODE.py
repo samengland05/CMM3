@@ -3,18 +3,36 @@ import matplotlib.pyplot as plt
 
 # Parameters (example Mars rover wheel suspension)
 m = 50.0     # kg
-k = 15000.0  # N/m
-c = 1200.0   # N·s/m
+k = 5413.71  # N/m
+c = 400   # N·s/m
 
 # External force (terrain bump)
-def F(t):
-    return 1000.0 if 1.0 <= t <= 1.2 else 0.0
+
 
 # ODE system: y = [x, v]  (displacement, velocity)
 def f(t, y):
     x, v = y
-    a = (F(t) - c*v - k*x) / m  # from m*a = F - c*v - k*x
+    y_t = terrain(t)          # terrain displacement at time t
+    dy_dt = terrain_derivative(t)  # terrain velocity at time t
+    a = (k*(y_t - x) + c*(dy_dt - v)) / m
     return np.array([v, a])
+
+def terrain(t):
+    return (-1.728e-17*(t**6) +
+            1.02e-13*(t**5) -
+            2.265e-10*(t**4) +
+            2.336e-7*(t**3) -
+            0.0001102*(t**2) +
+            0.01905*t -
+            0.1875)
+
+def terrain_derivative(t):
+    return (-1.728e-17*6*(t**5) +
+             1.02e-13*5*(t**4) -
+             2.265e-10*4*(t**3) +
+             2.336e-7*3*(t**2) -
+             0.0001102*2*t +
+             0.01905)
 
 # Runge-Kutta 4th order
 def rk4(f, y0, t0, tf, dt):
@@ -31,7 +49,7 @@ def rk4(f, y0, t0, tf, dt):
 
 # Initial conditions
 y0 = np.array([0.0, 0.0])  # x0=0, v0=0
-t0, tf, dt = 0.0, 5.0, 0.001
+t0, tf, dt = 0.0, 1000.0, 0.1
 
 # Solve
 t, y = rk4(f, y0, t0, tf, dt)
@@ -45,4 +63,3 @@ plt.xlabel("Time [s]")
 plt.ylabel("Displacement [m]")
 plt.grid(True)
 plt.show()
-
