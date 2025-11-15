@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 # Parameters (example Mars rover wheel suspension)
 m = 50.0     # kg
 k = 5413.71  # N/m
-c = 400   # N·s/m
+c = 1000   # N·s/m
 
 # External force (terrain bump)
 
