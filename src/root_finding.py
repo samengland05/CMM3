@@ -40,7 +40,7 @@ def secant(f,x0,x1,tol=1e-6, N=50):
     return x2
 
 
-m=185/6
+m=185/4
 c=1000
 
 
