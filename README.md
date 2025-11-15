@@ -1,4 +1,2 @@
-# CMM3
-Suspension system modelling
-sam england
-one two
+# Mars Suspension System Simulation - README
+
