@@ -47,8 +47,8 @@ plt.tight_layout()
 plt.show()
 
 # Parameters (example Mars rover wheel suspension)
-m = 50.0     # kg
-k = 5413.71  # N/m
+m = 185/4     # kg
+k = 4628.21  # N/m
 c = 1000   # N·s/m
 
 # External force (terrain bump)
@@ -147,7 +147,7 @@ def secant(f,x0,x1,tol=1e-6, N=50):
     return x2
 
 
-m=185/6
+m=185/4
 c=1000
 
 
