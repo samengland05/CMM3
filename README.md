@@ -24,7 +24,8 @@ Where the three required numerical methods are implemented :
 1. Regression/Interpolation (polynomial approximation of terrain)
 
    Location : top of the coding script
-   poly_coeff
+   
+   poly_coeff = np.polyfit(time_values, height_values, poly order)
 3. ODE-Solving (Runge-Kutta 4th Order
 4. Root-finding (Secant method)
 
