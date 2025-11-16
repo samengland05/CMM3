@@ -25,8 +25,16 @@ Where the three required numerical methods are implemented :
 
    Location : top of the coding script
    
-   poly_coeff = np.polyfit(time_values, height_values, poly order)
-3. ODE-Solving (Runge-Kutta 4th Order
-4. Root-finding (Secant method)
+   poly_coeff = np.polyfit(time_values, height_values, poly_order)
+
+   z_r = np.poly1d(poly_coeff)
+
+   Objective : Convert the raw terrain data into a smooth, differentiable function z(t) to be used as the suspension input. 
+3. ODE-Solving (Runge-Kutta 4th Order)
+
+   Location : mid of the coding script
+
+   
+5. Root-finding (Secant method)
 
    
