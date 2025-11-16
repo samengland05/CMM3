@@ -34,7 +34,18 @@ Where the three required numerical methods are implemented :
 
    Location : mid of the coding script
 
-   
+   def rk4(f ,y0, t0, tf, dt):
+
+   Objective : Solve the suspension equation (DOF=1) :
+   mx" + c(
+
+   Computes the displacement and velocity of the rover mass over time.
 5. Root-finding (Secant method)
+
+   Location : Bottom half of the script
+
+   Objective : Automatically calculate the spring stiffness, k such that the maximum suspension deflection = 0.025m
+
+   The objective function runs an ODE simulation for every value of k tested.
 
    
