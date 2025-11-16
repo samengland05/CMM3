@@ -15,10 +15,10 @@ How to run the code :
 1. Install python packages (external functions) :
    
    pip install numpy pandas matplotlib
-3. Place files in the same folder:
+2. Place files in the same folder:
 
    folder : Mars suspension system simulation, gale_terrain_synthetic.csv
-5. Run the code
+3. Run the code
 
 Where the three required numerical methods are implemented : 
 1. Regression/Interpolation (polynomial approximation of terrain)
@@ -30,22 +30,34 @@ Where the three required numerical methods are implemented :
    z_r = np.poly1d(poly_coeff)
 
    Objective : Convert the raw terrain data into a smooth, differentiable function z(t) to be used as the suspension input. 
-3. ODE-Solving (Runge-Kutta 4th Order)
+2. ODE-Solving (Runge-Kutta 4th Order)
 
    Location : mid of the coding script
 
    def rk4(f ,y0, t0, tf, dt):
 
    Objective : Solve the suspension equation (DOF=1) :
-   mx" + c(
+   mx" + c(x' - y') + k(x - y) = 0
 
    Computes the displacement and velocity of the rover mass over time.
-5. Root-finding (Secant method)
+3. Root-finding (Secant method)
 
    Location : Bottom half of the script
+
+   k_solution= secant(objective,k0,k1)
 
    Objective : Automatically calculate the spring stiffness, k such that the maximum suspension deflection = 0.025m
 
    The objective function runs an ODE simulation for every value of k tested.
+
+Generated outputs : 
+
+The coding script will produce : 
+
+1. Polynomial terrain plot
+2. Suspeension displacement vs Time plot
+3. Root-finding plot (Suspension deflection vs Stiffness)
+4. Final estimated stiffness value
+5. Validation whether the value lies within the suitable range
 
    
