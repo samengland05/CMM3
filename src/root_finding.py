@@ -77,5 +77,26 @@ print("Use k-values on either side of that crossing as your new k0 and k1.")
 
 k0,k1=4000,6000
 k_solution= secant(objective,k0,k1)
-print(f"\nEstimated stiffness k ≈ {k_solution:.2f} N/m")
 
+# Check if the calculated stiffness is within a valid range
+k_min, k_max = 1000, 10000  # you can adjust this range for your rover
+
+print("\n" + "-"*60)
+print("  FINAL RESULTS — MARS ROVER SUSPENSION TUNING")
+print("-"*60)
+print(f"Estimated stiffness (k)  ≈ {k_solution:.2f} N/m")
+print(f"Damping coefficient (c)  = {c:.2f} Ns/m")
+print(f"Mass (m)                 = {m:.2f} kg")
+
+# Check if within range
+if k_min <= k_solution <= k_max:
+    print(f"! The calculated stiffness lies within the expected range ({k_min}–{k_max} N/m).")
+else:
+    print(f"! The calculated stiffness is outside the expected range ({k_min}–{k_max} N/m).")
+    print("   Please verify your input parameters or root-finding range.")
+
+print("-"*60)
+print("Target max deflection: 0.025 m")
+print("Simulation & root-finding completed successfully.")
+print("-"*60)
+print(f"\nEstimated stiffness k ≈ {k_solution:.2f} N/m")
