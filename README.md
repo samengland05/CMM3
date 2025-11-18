@@ -60,4 +60,6 @@ The coding script will produce :
 4. Final estimated stiffness value
 5. Validation whether the value lies within the suitable range
 
-   
+note :
+
+file mars_terrain_synthetic.csv and teerain_data.csv should be ignored since we(not the owner of this repository) were not able to remove it
