@@ -156,7 +156,7 @@ c=1000
 k_values_plot = np.linspace(500, 10000, 100) 
 
 
-# We use objective(k) which returns (deflection - 0.05)
+# We use objective(k) which returns (deflection - 0.025)
 objective_values = []
 for k_val in k_values_plot:
     print(f"Plotting: Trying k={k_val:.0f}")
