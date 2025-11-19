@@ -17,7 +17,7 @@ How to run the code :
    pip install numpy pandas matplotlib
 2. Place files in the same folder:
 
-   folder : Mars suspension system simulation, gale_terrain_synthetic.csv
+   folder : full code(regression, ODE,root finding) , gale_terrain_synthetic.csv
 3. Run the code
 
 Where the three required numerical methods are implemented : 
