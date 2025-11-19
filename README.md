@@ -27,6 +27,9 @@ Project files :
 
   polynomial_of_mars_terrain.py (graph plotted to show interpolation of raw data)
 
+- In data folder :
+  Contains one file named gale_terrain synthetic.csv (raw data of the Martian terrain profile)
+
 How to run the code : 
 1. Install python packages (external functions) :
    
