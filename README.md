@@ -11,6 +11,15 @@ Project files :
 - gale_terrain_synthetic.csv
   A synthetic but realistic terrain profile representing the elevation patterns in Gale Crater, Mars. It follows the typical roughness and slopes patterns from NASA, MOLA and HiRISE terrain maps. The file was generated to be easier to use for numerical modelling.
 
+ - File separation :
+   In src folder, contains 4 files : Full ode.py , which combines all three separated coding 
+
+   ODE.py (coding to solve the governing ODE of the system)
+
+   regression.py (coding of interpolation of raw data)
+
+   root_finding.py (coding to obtain optimal stiffness for the system)
+
 How to run the code : 
 1. Install python packages (external functions) :
    
