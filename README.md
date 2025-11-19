@@ -20,6 +20,13 @@ Project files :
 
    root_finding.py (coding to obtain optimal stiffness for the system)
 
+- In outputs folder :
+  Contains files of coding for graphs plotted 
+
+  outputs.py (graphs plotted associated with the root finding code)
+
+  polynomial_of_mars_terrain.py (graph plotted to show interpolation of raw data)
+
 How to run the code : 
 1. Install python packages (external functions) :
    
